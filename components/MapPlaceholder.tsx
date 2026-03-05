@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { Colors, BorderRadius, Spacing, FontSize } from '../constants/theme';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+import { View, Text, StyleSheet } from 'react-native';
+import { Colors, BorderRadius, FontSize } from '../constants/theme';
 
 export default function MapPlaceholder({ style }: { style?: any }) {
   return (

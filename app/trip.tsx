@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
+  Animated,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Platform,
   StatusBar,
-  Dimensions,
   Image,
+  Easing,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -16,10 +17,65 @@ import { mockDriver } from '../constants/mockData';
 import FloatingInfoBox from '../components/FloatingInfoBox';
 import LottieView from 'lottie-react-native';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-
 export default function TripScreen() {
   const router = useRouter();
+  const routeProgress = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const runRouteLoop = () => {
+      routeProgress.setValue(0);
+
+      Animated.sequence([
+        Animated.timing(routeProgress, {
+          toValue: 0.35,
+          duration: 1700,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(routeProgress, {
+          toValue: 0.75,
+          duration: 2400,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.timing(routeProgress, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.inOut(Easing.quad),
+          useNativeDriver: true,
+        }),
+        Animated.delay(700),
+      ]).start(({ finished }) => {
+        if (finished && isMounted) {
+          runRouteLoop();
+        }
+      });
+    };
+
+    runRouteLoop();
+
+    return () => {
+      isMounted = false;
+      routeProgress.stopAnimation();
+    };
+  }, [routeProgress]);
+
+  const carTranslateX = routeProgress.interpolate({
+    inputRange: [0, 0.35, 0.75, 1],
+    outputRange: [0, 0, 145, 210],
+  });
+
+  const carTranslateY = routeProgress.interpolate({
+    inputRange: [0, 0.35, 0.75, 1],
+    outputRange: [0, 72, 128, 128],
+  });
+
+  const carRotation = routeProgress.interpolate({
+    inputRange: [0, 0.35, 0.75, 1],
+    outputRange: ['90deg', '90deg', '26deg', '0deg'],
+  });
 
   return (
     <View style={styles.container}>
@@ -27,25 +83,58 @@ export default function TripScreen() {
 
       {/* Map Background */}
       <View style={styles.mapBg}>
-        <View style={[styles.road, { top: '30%', left: 0, right: 0, height: 3 }]} />
-        <View style={[styles.road, { top: '55%', left: 0, right: 0, height: 2.5 }]} />
-        <View style={[styles.road, { left: '30%', top: 0, bottom: 0, width: 3, height: '100%' }]} />
-        <View style={[styles.road, { left: '65%', top: 0, bottom: 0, width: 3, height: '100%' }]} />
-        <View style={[styles.greenArea, { top: '10%', left: '5%', width: 65, height: 45 }]} />
-        <View style={[styles.greenArea, { top: '60%', right: '8%', width: 55, height: 40 }]} />
+        <View style={[styles.road, { top: '22%', left: 0, right: 0, height: 4 }]} />
+        <View style={[styles.road, { top: '42%', left: 0, right: 0, height: 3 }]} />
+        <View style={[styles.road, { top: '62%', left: 0, right: 0, height: 3 }]} />
+        <View style={[styles.road, { left: '20%', top: 0, bottom: 0, width: 3 }]} />
+        <View style={[styles.road, { left: '45%', top: 0, bottom: 0, width: 3 }]} />
+        <View style={[styles.road, { left: '74%', top: 0, bottom: 0, width: 3 }]} />
+
+        <View style={[styles.greenArea, { top: '10%', left: '6%', width: 72, height: 48 }]} />
+        <View style={[styles.greenArea, { top: '58%', right: '8%', width: 60, height: 40 }]} />
+
+        <View style={[styles.block, { top: '16%', left: '34%', width: 46, height: 30 }]} />
+        <View style={[styles.block, { top: '48%', left: '8%', width: 42, height: 28 }]} />
+        <View style={[styles.block, { top: '36%', right: '14%', width: 54, height: 32 }]} />
+
+        <View style={styles.routeLayer}>
+          <View style={styles.routeSeg1} />
+          <View style={styles.routeSeg2} />
+          <View style={styles.routeSeg3} />
+        </View>
+
+        <View style={styles.pickupMarker}>
+          <View style={styles.pickupPulse} />
+          <View style={styles.pickupDot} />
+        </View>
+
+        <View style={styles.dropoffMarker}>
+          <View style={styles.dropoffDot} />
+          <View style={styles.dropoffShadow} />
+        </View>
 
         {/* Car marker */}
-        <View style={styles.carMarker}>
+        <Animated.View
+          style={[
+            styles.carMarker,
+            {
+              transform: [
+                { translateX: carTranslateX },
+                { translateY: carTranslateY },
+              ],
+            },
+          ]}
+        >
           <View style={styles.carMarkerInner}>
-            <Ionicons name="car-sport" size={20} color="#02B150" />
+            <Animated.View style={{ transform: [{ rotate: carRotation }] }}>
+              <Image
+                source={require('../resources/images/Mockup/avanza.png')}
+                style={styles.mapCarImage}
+                resizeMode="contain"
+              />
+            </Animated.View>
           </View>
-        </View>
-
-        {/* ETA Badge */}
-        <View style={styles.etaBadge}>
-          <Ionicons name="time-outline" size={14} color="#02B150" />
-          <Text style={styles.etaText}>{mockDriver.eta}</Text>
-        </View>
+        </Animated.View>
 
         {/* Floating SIMATA Info */}
         <FloatingInfoBox />
@@ -103,9 +192,11 @@ export default function TripScreen() {
         {/* Vehicle Info */}
         <View style={styles.vehicleRow}>
           <View style={styles.vehicleWrap}>
-            <View style={[styles.miniCar, { backgroundColor: '#C0C0C0' }]}>
-              <View style={styles.miniCarRoof} />
-            </View>
+            <Image
+              source={require('../resources/images/Mockup/avanza.png')}
+              style={styles.vehicleImage}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.vehicleInfo}>
             <Text style={styles.vehicleName}>
@@ -169,15 +260,102 @@ const styles = StyleSheet.create({
   greenArea: {
     position: 'absolute',
     backgroundColor: '#C8E6C9',
+    borderRadius: 5,
+    opacity: 0.7,
+  },
+  block: {
+    position: 'absolute',
+    backgroundColor: '#D9D2C7',
     borderRadius: 4,
-    opacity: 0.6,
+    opacity: 0.55,
+  },
+  routeLayer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  routeSeg1: {
+    position: 'absolute',
+    top: '24%',
+    left: '23%',
+    width: 4,
+    height: 72,
+    backgroundColor: '#2979FF',
+    borderRadius: 2,
+  },
+  routeSeg2: {
+    position: 'absolute',
+    top: '24%',
+    left: '23%',
+    width: 150,
+    height: 4,
+    backgroundColor: '#2979FF',
+    borderRadius: 2,
+    transform: [{ rotate: '24deg' }],
+  },
+  routeSeg3: {
+    position: 'absolute',
+    top: '50%',
+    left: '60%',
+    width: 90,
+    height: 4,
+    backgroundColor: '#2979FF',
+    borderRadius: 2,
+  },
+  pickupMarker: {
+    position: 'absolute',
+    top: '21%',
+    left: '20%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 4,
+  },
+  pickupPulse: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(2,177,80,0.16)',
+    position: 'absolute',
+  },
+  pickupDot: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#02B150',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
+  dropoffMarker: {
+    position: 'absolute',
+    top: '50%',
+    left: '79%',
+    alignItems: 'center',
+    zIndex: 4,
+  },
+  dropoffDot: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#E91E8F',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
+  dropoffShadow: {
+    width: 8,
+    height: 3,
+    borderRadius: 4,
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    marginTop: 2,
   },
   carMarker: {
     position: 'absolute',
-    top: '35%',
-    left: '40%',
+    top: '20.5%',
+    left: '18.8%',
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 6,
   },
   carMarkerInner: {
     width: 44,
@@ -188,25 +366,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     ...Shadows.md,
   },
-  etaBadge: {
-    position: 'absolute',
-    top: '30%',
-    left: '55%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    gap: 4,
-    ...Shadows.sm,
+  mapCarImage: {
+    width: 24,
+    height: 14,
   },
-  etaText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#02B150',
-  },
-
   // Bottom card
   bottomCard: {
     position: 'absolute',
@@ -341,27 +504,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   vehicleWrap: {
-    width: 48,
-    height: 30,
+    width: 56,
+    height: 34,
     marginRight: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  miniCar: {
-    width: 40,
-    height: 20,
-    borderRadius: 6,
-    position: 'relative',
-  },
-  miniCarRoof: {
-    position: 'absolute',
-    top: -7,
-    left: 8,
-    width: 22,
-    height: 10,
-    backgroundColor: 'rgba(0,0,0,0.08)',
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
+  vehicleImage: {
+    width: 52,
+    height: 28,
   },
   vehicleInfo: {
     flex: 1,

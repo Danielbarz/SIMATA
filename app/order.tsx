@@ -312,7 +312,7 @@ export default function OrderScreen() {
           </Text>
         </View>
         <TouchableOpacity style={styles.ubahBtn} activeOpacity={0.7}>
-          <Ionicons name="pencil" size={14} color="#353535" />
+          <Ionicons name="pencil" size={14} color="#FFFFFF" />
           <Text style={styles.ubahText}>Ubah</Text>
         </TouchableOpacity>
       </View>
@@ -677,14 +677,14 @@ const styles = StyleSheet.create({
   ubahBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#E91E8F',
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 8,
     ...Shadows.sm,
   },
   ubahText: {
-    color: '#353535',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: 'bold',
     marginLeft: 2,

@@ -39,7 +39,9 @@ const SIMATA_FACTS = [
   },
 ];
 
-const ROTATE_INTERVAL = 5000;
+const ROTATE_INTERVAL = 2500;
+const DRIVER_SEARCH_TIMEOUT = 8000;
+const FOUND_REDIRECT_DELAY = 1200;
 
 export default function SearchingScreen() {
   const router = useRouter();
@@ -48,11 +50,11 @@ export default function SearchingScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
-  // Simulate finding driver after 25 seconds (to show all facts)
+  // Simulate finding driver faster for better UX.
   useEffect(() => {
     const timer = setTimeout(() => {
       setFound(true);
-    }, 25000);
+    }, DRIVER_SEARCH_TIMEOUT);
     return () => clearTimeout(timer);
   }, []);
 
@@ -87,7 +89,7 @@ export default function SearchingScreen() {
       }).start();
       const timer = setTimeout(() => {
         router.replace('/trip');
-      }, 2000);
+      }, FOUND_REDIRECT_DELAY);
       return () => clearTimeout(timer);
     }
   }, [found]);
