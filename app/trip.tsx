@@ -1,0 +1,462 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  StatusBar,
+  Dimensions,
+  Image,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { Colors, FontSize, Shadows } from '../constants/theme';
+import { mockDriver } from '../constants/mockData';
+import FloatingInfoBox from '../components/FloatingInfoBox';
+import LottieView from 'lottie-react-native';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+export default function TripScreen() {
+  const router = useRouter();
+
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
+
+      {/* Map Background */}
+      <View style={styles.mapBg}>
+        <View style={[styles.road, { top: '30%', left: 0, right: 0, height: 3 }]} />
+        <View style={[styles.road, { top: '55%', left: 0, right: 0, height: 2.5 }]} />
+        <View style={[styles.road, { left: '30%', top: 0, bottom: 0, width: 3, height: '100%' }]} />
+        <View style={[styles.road, { left: '65%', top: 0, bottom: 0, width: 3, height: '100%' }]} />
+        <View style={[styles.greenArea, { top: '10%', left: '5%', width: 65, height: 45 }]} />
+        <View style={[styles.greenArea, { top: '60%', right: '8%', width: 55, height: 40 }]} />
+
+        {/* Car marker */}
+        <View style={styles.carMarker}>
+          <View style={styles.carMarkerInner}>
+            <Ionicons name="car-sport" size={20} color="#02B150" />
+          </View>
+        </View>
+
+        {/* ETA Badge */}
+        <View style={styles.etaBadge}>
+          <Ionicons name="time-outline" size={14} color="#02B150" />
+          <Text style={styles.etaText}>{mockDriver.eta}</Text>
+        </View>
+
+        {/* Floating SIMATA Info */}
+        <FloatingInfoBox />
+      </View>
+
+      {/* Bottom Card */}
+      <View style={styles.bottomCard}>
+        <View style={styles.dragHandleWrap}>
+          <View style={styles.dragHandle} />
+        </View>
+
+        {/* Status */}
+        <View style={styles.statusRow}>
+          <View style={styles.statusBadge}>
+            <Text style={styles.statusText}>Dalam Perjalanan</Text>
+          </View>
+          <View style={styles.monitoringBadge}>
+            <LottieView
+              source={require('../resources/animations/dot.json')}
+              autoPlay
+              loop
+              style={styles.dotAnim}
+            />
+            <Text style={styles.monitoringText}>Diawasi SIMATA</Text>
+          </View>
+        </View>
+
+        {/* Driver Info */}
+        <View style={styles.driverRow}>
+          <View style={styles.driverAvatar}>
+            {mockDriver.avatar ? (
+              <Image source={mockDriver.avatar} style={styles.driverAvatarImage} />
+            ) : (
+              <Ionicons name="person" size={28} color="#02B150" />
+            )}
+          </View>
+          <View style={styles.driverInfo}>
+            <Text style={styles.driverName}>{mockDriver.name}</Text>
+            <View style={styles.ratingRow}>
+              <Ionicons name="star" size={14} color="#FFB300" />
+              <Text style={styles.driverRating}>{mockDriver.rating}</Text>
+              <Text style={styles.driverRides}>• {mockDriver.totalRides} perjalanan</Text>
+            </View>
+          </View>
+          <View style={styles.driverActions}>
+            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+              <Ionicons name="chatbubble-ellipses" size={20} color="#02B150" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+              <Ionicons name="call" size={20} color="#02B150" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Vehicle Info */}
+        <View style={styles.vehicleRow}>
+          <View style={styles.vehicleWrap}>
+            <View style={[styles.miniCar, { backgroundColor: '#C0C0C0' }]}>
+              <View style={styles.miniCarRoof} />
+            </View>
+          </View>
+          <View style={styles.vehicleInfo}>
+            <Text style={styles.vehicleName}>
+              {mockDriver.vehicleMake} {mockDriver.vehicleModel}
+            </Text>
+            <Text style={styles.vehiclePlate}>{mockDriver.vehiclePlate}</Text>
+          </View>
+          <Text style={styles.vehicleColor}>{mockDriver.vehicleColor}</Text>
+        </View>
+
+        {/* Route */}
+        <View style={styles.routeCard}>
+          <View style={styles.routeRow}>
+            <View style={styles.dotGreen} />
+            <Text style={styles.routeText} numberOfLines={1}>Stasiun Cisauk - Intermoda BSD</Text>
+          </View>
+          <View style={styles.routeLineV} />
+          <View style={styles.routeRow}>
+            <View style={styles.dotPink} />
+            <Text style={styles.routeText} numberOfLines={1}>AEON Mall BSD City - Gate A</Text>
+          </View>
+        </View>
+
+        {/* Bottom actions */}
+        <View style={styles.bottomActions}>
+          <TouchableOpacity
+            style={styles.emergencyBtn}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="warning" size={18} color="#F44336" />
+            <Text style={styles.emergencyText}>Darurat</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.shareBtn}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="share-social" size={18} color="#02B150" />
+            <Text style={styles.shareText}>Bagikan Perjalanan</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#E8F0E4',
+  },
+  mapBg: {
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#E8F0E4',
+  },
+  road: {
+    position: 'absolute',
+    backgroundColor: '#FFFFFF',
+  },
+  greenArea: {
+    position: 'absolute',
+    backgroundColor: '#C8E6C9',
+    borderRadius: 4,
+    opacity: 0.6,
+  },
+  carMarker: {
+    position: 'absolute',
+    top: '35%',
+    left: '40%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carMarkerInner: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Shadows.md,
+  },
+  etaBadge: {
+    position: 'absolute',
+    top: '30%',
+    left: '55%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 4,
+    ...Shadows.sm,
+  },
+  etaText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#02B150',
+  },
+
+  // Bottom card
+  bottomCard: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+    ...Shadows.top,
+    zIndex: 10,
+  },
+  dragHandleWrap: {
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 8,
+  },
+  dragHandle: {
+    width: 49,
+    height: 5,
+    backgroundColor: '#00000040',
+    borderRadius: 3,
+  },
+
+  // Status
+  statusRow: {
+    paddingHorizontal: 24,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(2,177,80,0.1)',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#02B150',
+  },
+  monitoringBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(233,30,143,0.08)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    gap: 2,
+  },
+  dotAnim: {
+    width: 22,
+    height: 22,
+  },
+  monitoringText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#E91E8F',
+  },
+
+  // Driver
+  driverRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginBottom: 16,
+  },
+  driverAvatar: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'rgba(2,177,80,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    overflow: 'hidden',
+  },
+  driverAvatarImage: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+  },
+  driverInfo: {
+    flex: 1,
+  },
+  driverName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#353535',
+    marginBottom: 2,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  driverRating: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#353535',
+  },
+  driverRides: {
+    fontSize: 12,
+    color: '#999',
+  },
+  driverActions: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  actionBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(2,177,80,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  // Vehicle
+  vehicleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    marginBottom: 16,
+    backgroundColor: '#F9F9F9',
+    paddingVertical: 12,
+    marginHorizontal: 16,
+    borderRadius: 12,
+  },
+  vehicleWrap: {
+    width: 48,
+    height: 30,
+    marginRight: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  miniCar: {
+    width: 40,
+    height: 20,
+    borderRadius: 6,
+    position: 'relative',
+  },
+  miniCarRoof: {
+    position: 'absolute',
+    top: -7,
+    left: 8,
+    width: 22,
+    height: 10,
+    backgroundColor: 'rgba(0,0,0,0.08)',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  vehicleInfo: {
+    flex: 1,
+  },
+  vehicleName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#353535',
+  },
+  vehiclePlate: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#353535',
+    letterSpacing: 1,
+  },
+  vehicleColor: {
+    fontSize: 12,
+    color: '#999',
+  },
+
+  // Route
+  routeCard: {
+    marginHorizontal: 16,
+    backgroundColor: '#F9F9F9',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+  },
+  routeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  routeLineV: {
+    width: 1.5,
+    height: 18,
+    backgroundColor: '#DDD',
+    marginLeft: 5.5,
+    marginVertical: 4,
+  },
+  dotGreen: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#02B150',
+  },
+  dotPink: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#E91E8F',
+  },
+  routeText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#353535',
+    flex: 1,
+  },
+
+  // Bottom actions
+  bottomActions: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    gap: 12,
+  },
+  emergencyBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    backgroundColor: '#FFF0F0',
+    borderWidth: 1,
+    borderColor: '#FFD0D0',
+  },
+  emergencyText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#F44336',
+  },
+  shareBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    borderRadius: 25,
+    backgroundColor: 'rgba(2,177,80,0.1)',
+  },
+  shareText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#02B150',
+  },
+});
