@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius, Shadows } from '../constants/theme';
@@ -30,7 +31,15 @@ export default function WalletScreen() {
         {/* Balance Card */}
         <View style={styles.balanceCard}>
           <View style={styles.balanceTop}>
-            <Text style={styles.balanceLabel}>Saldo SIMATA Pay</Text>
+            <View style={styles.balanceLabelRow}>
+              <Text style={styles.balanceLabel}>Saldo</Text>
+              <Image
+                source={require('../resources/icons/icon-full.png')}
+                style={styles.balanceLogo}
+                resizeMode="contain"
+              />
+              <Text style={styles.balanceLabel}>Pay</Text>
+            </View>
             <Ionicons name="eye-outline" size={18} color={Colors.textSecondary} />
           </View>
           <Text style={styles.balanceAmount}>{userProfile.walletBalance}</Text>
@@ -60,7 +69,7 @@ export default function WalletScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Metode Pembayaran</Text>
           {[
-            { icon: 'wallet', name: 'SIMATA Pay', detail: 'Utama', color: Colors.primary },
+            { icon: 'wallet', name: 'Pay', detail: 'Utama', color: Colors.primary },
             { icon: 'card', name: 'BCA Debit', detail: '****4821', color: Colors.accentBlue },
             { icon: 'qr-code-outline', name: 'QRIS', detail: 'Scan & Pay', color: '#6C63FF' },
             { icon: 'cash', name: 'Tunai', detail: 'Bayar langsung', color: Colors.accent },
@@ -168,6 +177,15 @@ const styles = StyleSheet.create({
   balanceLabel: {
     fontSize: FontSize.sm,
     color: Colors.textSecondary,
+  },
+  balanceLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  balanceLogo: {
+    width: 54,
+    height: 14,
   },
   balanceAmount: {
     fontSize: FontSize.hero,

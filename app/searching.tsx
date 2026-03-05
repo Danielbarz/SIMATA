@@ -7,6 +7,7 @@ import {
   Dimensions,
   StatusBar,
   Animated,
+  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,10 +17,10 @@ import { mockDriver } from '../constants/mockData';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const SIMATA_FACTS = [
+const SAFETY_FACTS = [
   {
     icon: 'eye-outline' as const,
-    text: 'SIMATA adalah infrastruktur keamanan digital yang mengintegrasikan teknologi Edge-AI Computer Vision untuk mendeteksi perilaku anomali di dalam kabin secara preventif.',
+    text: 'Platform ini adalah infrastruktur keamanan digital yang mengintegrasikan teknologi Edge-AI Computer Vision untuk mendeteksi perilaku anomali di dalam kabin secara preventif.',
   },
   {
     icon: 'body-outline' as const,
@@ -27,7 +28,7 @@ const SIMATA_FACTS = [
   },
   {
     icon: 'globe-outline' as const,
-    text: 'SIMATA hadir untuk mewujudkan standar baru keamanan transportasi nasional yang inklusif melalui monitoring aktif yang patuh terhadap regulasi privasi.',
+    text: 'Platform ini hadir untuk mewujudkan standar baru keamanan transportasi nasional yang inklusif melalui monitoring aktif yang patuh terhadap regulasi privasi.',
   },
   {
     icon: 'phone-portrait-outline' as const,
@@ -67,7 +68,7 @@ export default function SearchingScreen() {
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        setFactIndex((prev) => (prev + 1) % SIMATA_FACTS.length);
+        setFactIndex((prev) => (prev + 1) % SAFETY_FACTS.length);
         Animated.timing(fadeAnim, {
           toValue: 1,
           duration: 300,
@@ -94,7 +95,7 @@ export default function SearchingScreen() {
     }
   }, [found]);
 
-  const currentFact = SIMATA_FACTS[factIndex];
+  const currentFact = SAFETY_FACTS[factIndex];
 
   return (
     <View style={styles.container}>
@@ -157,15 +158,22 @@ export default function SearchingScreen() {
               </View>
             </View>
 
-            {/* SIMATA Fact Card - matches floating box style */}
+            {/* Safety fact card */}
             <Animated.View style={[styles.factCard, { opacity: fadeAnim }]}>
               <View style={styles.factHeader}>
                 <View style={styles.factIconWrap}>
                   <Ionicons name={currentFact.icon as any} size={18} color="#E91E8F" />
                 </View>
-                <Text style={styles.factLabel}>SIMATA Safety</Text>
+                <View style={styles.factLabelRow}>
+                  <Image
+                    source={require('../resources/icons/icon-full.png')}
+                    style={styles.factLogo}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.factLabel}>Safety</Text>
+                </View>
                 <View style={styles.factDots}>
-                  {SIMATA_FACTS.map((_, i) => (
+                  {SAFETY_FACTS.map((_, i) => (
                     <View
                       key={i}
                       style={[styles.factDot, i === factIndex && styles.factDotActive]}
@@ -330,7 +338,7 @@ const styles = StyleSheet.create({
     color: '#353535',
   },
 
-  // SIMATA Fact Card
+  // Safety Fact Card
   factCard: {
     marginHorizontal: 24,
     backgroundColor: '#F8FFF8',
@@ -358,7 +366,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#02B150',
+  },
+  factLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
+    gap: 6,
+  },
+  factLogo: {
+    width: 60,
+    height: 14,
   },
   factDots: {
     flexDirection: 'row',

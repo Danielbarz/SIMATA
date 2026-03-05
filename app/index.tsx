@@ -7,6 +7,7 @@ import {
   StatusBar,
   Platform,
   Dimensions,
+  Image,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,7 +41,11 @@ export default function RoleSelectionScreen() {
             <Ionicons name="car-sport" size={32} color="#FFF" />
           </LinearGradient>
         </View>
-        <Text style={styles.appName}>SIMATA</Text>
+        <Image
+          source={require('../resources/icons/icon-full.png')}
+          style={styles.appLogoWordmark}
+          resizeMode="contain"
+        />
         <Text style={styles.tagline}>Simulasi Transportasi Aman</Text>
       </View>
 
@@ -99,7 +104,14 @@ export default function RoleSelectionScreen() {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={styles.footerText}>SIMATA Demo v1.0</Text>
+        <View style={styles.footerBrandRow}>
+          <Image
+            source={require('../resources/icons/icon-full.png')}
+            style={styles.footerLogo}
+            resizeMode="contain"
+          />
+          <Text style={styles.footerText}>Demo v1.0</Text>
+        </View>
       </View>
     </View>
   );
@@ -158,6 +170,11 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     letterSpacing: 2,
     marginBottom: 4,
+  },
+  appLogoWordmark: {
+    width: 168,
+    height: 38,
+    marginBottom: 6,
   },
   tagline: {
     fontSize: FontSize.sm,
@@ -235,6 +252,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: Platform.OS === 'ios' ? 40 : 24,
     paddingTop: 16,
+  },
+  footerBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  footerLogo: {
+    width: 72,
+    height: 16,
   },
   footerText: {
     fontSize: FontSize.xs,

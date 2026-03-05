@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import FloatingInfoBox from '../components/FloatingInfoBox';
 export default function TripScreen() {
   const router = useRouter();
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const [showSafetyInfo, setShowSafetyInfo] = useState(false);
 
   useEffect(() => {
     const pulseLoop = Animated.loop(
@@ -61,12 +62,31 @@ export default function TripScreen() {
           </View>
         </View>
 
-        {/* Floating SIMATA Info */}
+        {/* Floating Safety Info */}
         <FloatingInfoBox />
       </View>
 
       {/* Bottom Card */}
       <View style={styles.bottomCard}>
+        <TouchableOpacity
+          style={styles.floatingMonitorIsland}
+          activeOpacity={0.85}
+          onPress={() => setShowSafetyInfo(true)}
+        >
+          <View style={styles.monitorDotWrap}>
+            <Animated.View style={[styles.monitorDotPulse, { transform: [{ scale: pulseAnim }] }]} />
+            <View style={styles.monitorDotCore} />
+          </View>
+          <View style={styles.monitoringTextRow}>
+            <Text style={styles.monitoringText}>Diawasi</Text>
+            <Image
+              source={require('../resources/icons/icon-full.png')}
+              style={styles.monitoringLogo}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
+
         <View style={styles.dragHandleWrap}>
           <View style={styles.dragHandle} />
         </View>
@@ -75,13 +95,6 @@ export default function TripScreen() {
         <View style={styles.statusRow}>
           <View style={styles.statusBadge}>
             <Text style={styles.statusText}>Dalam Perjalanan</Text>
-          </View>
-          <View style={styles.monitoringBadge}>
-            <View style={styles.monitorDotWrap}>
-              <Animated.View style={[styles.monitorDotPulse, { transform: [{ scale: pulseAnim }] }]} />
-              <View style={styles.monitorDotCore} />
-            </View>
-            <Text style={styles.monitoringText}>Diawasi SIMATA</Text>
           </View>
         </View>
 
@@ -161,6 +174,40 @@ export default function TripScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {showSafetyInfo && (
+        <View style={styles.safetyInfoOverlay}>
+          <TouchableOpacity
+            style={styles.safetyInfoBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowSafetyInfo(false)}
+          />
+          <View style={styles.safetyInfoCard}>
+            <View style={styles.safetyInfoHeader}>
+              <Text style={styles.safetyInfoTitle}>Cara Kerja SIMATA</Text>
+              <TouchableOpacity onPress={() => setShowSafetyInfo(false)} activeOpacity={0.7}>
+                <Ionicons name="close" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.safetyInfoText}>
+              SIMATA memantau perjalanan secara real-time menggunakan AI untuk mendeteksi kondisi tidak aman.
+            </Text>
+            <Text style={styles.safetyInfoText}>
+              Jika terdeteksi anomali, sistem akan memicu notifikasi darurat dan menyimpan bukti digital secara aman.
+            </Text>
+            <Text style={styles.safetyInfoText}>
+              Semua pemrosesan dilakukan dengan pendekatan privasi-terjaga untuk melindungi data pengguna.
+            </Text>
+            <TouchableOpacity
+              style={styles.safetyInfoCloseBtn}
+              activeOpacity={0.8}
+              onPress={() => setShowSafetyInfo(false)}
+            >
+              <Text style={styles.safetyInfoCloseText}>Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -256,9 +303,10 @@ const styles = StyleSheet.create({
   statusRow: {
     paddingHorizontal: 24,
     marginBottom: 16,
+    marginTop: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
   statusBadge: {
     alignSelf: 'flex-start',
@@ -275,11 +323,74 @@ const styles = StyleSheet.create({
   monitoringBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(233,30,143,0.08)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
+    backgroundColor: 'rgba(244,67,54,0.10)',
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 22,
+    gap: 8,
+  },
+  floatingMonitorIsland: {
+    position: 'absolute',
+    top: -52,
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FCECEC',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 24,
     gap: 6,
+    zIndex: 20,
+    ...Shadows.md,
+  },
+  safetyInfoOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 40,
+    justifyContent: 'flex-end',
+  },
+  safetyInfoBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+  },
+  safetyInfoCard: {
+    marginHorizontal: 16,
+    marginBottom: Platform.OS === 'ios' ? 24 : 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    ...Shadows.lg,
+  },
+  safetyInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  safetyInfoTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1F1F1F',
+  },
+  safetyInfoText: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#4A4A4A',
+    marginBottom: 8,
+  },
+  safetyInfoCloseBtn: {
+    alignSelf: 'flex-end',
+    marginTop: 6,
+    backgroundColor: 'rgba(2,177,80,0.12)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  safetyInfoCloseText: {
+    color: '#02B150',
+    fontSize: 13,
+    fontWeight: '700',
   },
   monitorDotWrap: {
     width: 14,
@@ -292,18 +403,28 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: 'rgba(2,177,80,0.25)',
+    backgroundColor: 'rgba(244,67,54,0.35)',
   },
   monitorDotCore: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#02B150',
+    backgroundColor: '#F44336',
   },
   monitoringText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#E91E8F',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#D32F2F',
+  },
+  monitoringTextRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 0,
+    justifyContent: 'center',
+  },
+  monitoringLogo: {
+    width: 132,
+    height: 28,
   },
 
   // Driver

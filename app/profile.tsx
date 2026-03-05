@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius, Shadows } from '../constants/theme';
@@ -37,7 +38,7 @@ export default function ProfileScreen() {
         { icon: 'help-circle-outline', label: 'Pusat Bantuan', badge: null },
         { icon: 'chatbubble-ellipses-outline', label: 'Hubungi Kami', badge: null },
         { icon: 'document-text-outline', label: 'Syarat & Ketentuan', badge: null },
-        { icon: 'information-circle-outline', label: 'Tentang SIMATA', badge: 'v1.0' },
+        { icon: 'information-circle-outline', label: 'Tentang Aplikasi', badge: 'v1.0' },
       ],
     },
   ];
@@ -132,7 +133,14 @@ export default function ProfileScreen() {
           <Text style={styles.signOutText}>Keluar</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>SIMATA v1.0.0</Text>
+        <View style={styles.versionRow}>
+          <Image
+            source={require('../resources/icons/icon-full.png')}
+            style={styles.versionLogo}
+            resizeMode="contain"
+          />
+          <Text style={styles.version}>v1.0.0</Text>
+        </View>
         <View style={{ height: 30 }} />
       </ScrollView>
     </View>
@@ -342,5 +350,15 @@ const styles = StyleSheet.create({
     fontSize: FontSize.xs,
     color: Colors.textMuted,
     marginBottom: Spacing.lg,
+  },
+  versionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  versionLogo: {
+    width: 72,
+    height: 16,
   },
 });

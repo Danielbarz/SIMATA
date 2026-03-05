@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Platform,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Spacing, FontSize, BorderRadius, Shadows } from '../constants/theme';
@@ -50,7 +51,11 @@ export default function BookingScreen() {
         {/* Safety Banner */}
         <View style={styles.safetyBanner}>
           <View style={styles.safetyIcon}>
-            <Ionicons name="shield-checkmark" size={20} color={Colors.primary} />
+            <Image
+              source={require('../resources/icons/icon-small.png')}
+              style={styles.safetyShieldIcon}
+              resizeMode="contain"
+            />
           </View>
           <View style={styles.safetyContent}>
             <Text style={styles.safetyTitle}>Perjalanan kamu dijamin aman!</Text>
@@ -150,6 +155,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: Spacing.md,
+  },
+  safetyShieldIcon: {
+    width: 20,
+    height: 20,
   },
   safetyContent: {
     flex: 1,

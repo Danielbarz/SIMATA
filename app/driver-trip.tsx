@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ export default function DriverTripScreen() {
   const router = useRouter();
   const progressAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const [showDriverSafetyInfo, setShowDriverSafetyInfo] = useState(false);
 
   useEffect(() => {
     Animated.timing(progressAnim, {
@@ -152,13 +153,24 @@ export default function DriverTripScreen() {
         </View>
 
         {/* Monitoring pill */}
-        <View style={styles.monitorRow}>
+        <TouchableOpacity
+          style={styles.monitorRow}
+          activeOpacity={0.85}
+          onPress={() => setShowDriverSafetyInfo(true)}
+        >
           <View style={styles.monitorDotWrap}>
             <Animated.View style={[styles.monitorDotPulse, { transform: [{ scale: pulseAnim }] }]} />
             <View style={styles.monitorDotCore} />
           </View>
-          <Text style={styles.monitorText}>Perjalanan diawasi SIMATA</Text>
-        </View>
+          <View style={styles.monitorTextRow}>
+            <Text style={styles.monitorText}>Perjalanan diawasi</Text>
+            <Image
+              source={require('../resources/icons/icon-full.png')}
+              style={styles.monitorLogo}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
 
         {/* Action buttons */}
         <View style={styles.actionRow}>
@@ -188,6 +200,40 @@ export default function DriverTripScreen() {
           <Text style={styles.emergencyText}>Darurat</Text>
         </TouchableOpacity>
       </View>
+
+      {showDriverSafetyInfo && (
+        <View style={styles.safetyInfoOverlay}>
+          <TouchableOpacity
+            style={styles.safetyInfoBackdrop}
+            activeOpacity={1}
+            onPress={() => setShowDriverSafetyInfo(false)}
+          />
+          <View style={styles.safetyInfoCard}>
+            <View style={styles.safetyInfoHeader}>
+              <Text style={styles.safetyInfoTitle}>Cara Kerja SIMATA (Driver)</Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => setShowDriverSafetyInfo(false)}>
+                <Ionicons name="close" size={20} color="#666" />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.safetyInfoText}>
+              SIMATA membantu driver memantau keamanan kabin secara real-time selama perjalanan berlangsung.
+            </Text>
+            <Text style={styles.safetyInfoText}>
+              Ketika sistem mendeteksi kondisi berisiko, notifikasi darurat akan dikirim agar driver bisa merespons lebih cepat.
+            </Text>
+            <Text style={styles.safetyInfoText}>
+              Data diproses dengan pendekatan privasi-terjaga untuk melindungi driver dan penumpang.
+            </Text>
+            <TouchableOpacity
+              style={styles.safetyInfoCloseBtn}
+              activeOpacity={0.8}
+              onPress={() => setShowDriverSafetyInfo(false)}
+            >
+              <Text style={styles.safetyInfoCloseText}>Tutup</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 }
@@ -457,11 +503,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     marginBottom: 14,
-    backgroundColor: 'rgba(2,177,80,0.08)',
+    backgroundColor: 'rgba(244,67,54,0.10)',
     marginHorizontal: 24,
-    borderRadius: 30,
-    paddingVertical: 8,
-    paddingHorizontal: 14,
+    borderRadius: 32,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
   monitorDotWrap: {
     width: 14,
@@ -474,18 +520,74 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: 'rgba(2,177,80,0.35)',
+    backgroundColor: 'rgba(244,67,54,0.35)',
   },
   monitorDotCore: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#02B150',
+    backgroundColor: '#F44336',
   },
   monitorText: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#D32F2F',
+  },
+  monitorTextRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  monitorLogo: {
+    width: 110,
+    height: 24,
+  },
+  safetyInfoOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    zIndex: 40,
+    justifyContent: 'flex-end',
+  },
+  safetyInfoBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.22)',
+  },
+  safetyInfoCard: {
+    marginHorizontal: 16,
+    marginBottom: Platform.OS === 'ios' ? 24 : 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 16,
+    ...Shadows.lg,
+  },
+  safetyInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  safetyInfoTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#1F1F1F',
+  },
+  safetyInfoText: {
+    fontSize: 13,
+    lineHeight: 19,
+    color: '#4A4A4A',
+    marginBottom: 8,
+  },
+  safetyInfoCloseBtn: {
+    alignSelf: 'flex-end',
+    marginTop: 6,
+    backgroundColor: 'rgba(2,177,80,0.12)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  safetyInfoCloseText: {
     color: '#02B150',
+    fontSize: 13,
+    fontWeight: '700',
   },
 
   // Actions

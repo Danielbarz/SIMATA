@@ -194,7 +194,11 @@ export default function DriverCameraScreen() {
       {/* Top prompt */}
       <View style={styles.prompt}>
         <View style={styles.promptIcon}>
-          <Ionicons name="shield-checkmark" size={18} color="#02B150" />
+          <Image
+            source={require('../resources/icons/icon-small.png')}
+            style={styles.promptShieldIcon}
+            resizeMode="contain"
+          />
         </View>
         <Text style={styles.promptText}>
           Pastikan posisi kamera dapat menangkap wajah driver dan penumpang
@@ -417,6 +421,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexShrink: 0,
+  },
+  promptShieldIcon: {
+    width: 18,
+    height: 18,
   },
   promptText: {
     flex: 1,

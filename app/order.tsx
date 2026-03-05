@@ -361,7 +361,11 @@ export default function OrderScreen() {
           {/* Safety Banner */}
           <View style={styles.safetyCard}>
             <View style={styles.safetyRow}>
-              <Ionicons name="shield-checkmark" size={18} color="#02B150" />
+              <Image
+                source={require('../resources/icons/icon-small.png')}
+                style={styles.safetyShieldIcon}
+                resizeMode="contain"
+              />
               <Text style={styles.safetyTitle}>Perjalanan kamu dijamin aman!</Text>
             </View>
             <Text style={styles.safetyDesc}>
@@ -413,7 +417,11 @@ export default function OrderScreen() {
       {/* === FLOATING SAFETY CARD (visible when collapsed) === */}
       <Animated.View style={[styles.floatingSafetyCard, animatedFloatingSafetyStyle]}>
         <View style={styles.safetyRow}>
-          <Ionicons name="shield-checkmark" size={18} color="#02B150" />
+          <Image
+            source={require('../resources/icons/icon-small.png')}
+            style={styles.safetyShieldIcon}
+            resizeMode="contain"
+          />
           <Text style={styles.safetyTitle}>Perjalanan kamu dijamin aman!</Text>
         </View>
         <Text style={styles.safetyDesc}>
@@ -793,6 +801,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 6,
     gap: 8,
+  },
+  safetyShieldIcon: {
+    width: 18,
+    height: 18,
   },
   safetyTitle: {
     color: '#353535',

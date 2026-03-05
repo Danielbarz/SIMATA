@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Platform,
   StatusBar,
+  Image,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -73,7 +74,14 @@ export default function SplashScreen() {
       {/* Bottom text */}
       <View style={styles.footer}>
         <Text style={styles.loadingText}>Memuat aplikasi...</Text>
-        <Text style={styles.appVersion}>SIMATA Demo v1.0</Text>
+        <View style={styles.appVersionRow}>
+          <Image
+            source={require('../resources/icons/icon-full.png')}
+            style={styles.appVersionLogo}
+            resizeMode="contain"
+          />
+          <Text style={styles.appVersion}>Demo v1.0</Text>
+        </View>
       </View>
     </View>
   );
@@ -153,5 +161,14 @@ const styles = StyleSheet.create({
   appVersion: {
     fontSize: FontSize.xs,
     color: Colors.textMuted,
+  },
+  appVersionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  appVersionLogo: {
+    width: 72,
+    height: 16,
   },
 });

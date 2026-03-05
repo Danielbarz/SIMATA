@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Shadows } from '../constants/theme';
 
-const SIMATA_FACTS = [
-  'SIMATA adalah infrastruktur keamanan digital yang mengintegrasikan teknologi Edge-AI Computer Vision untuk mendeteksi perilaku anomali di dalam kabin secara preventif.',
+const SAFETY_FACTS = [
+  'Platform ini adalah infrastruktur keamanan digital yang mengintegrasikan teknologi Edge-AI Computer Vision untuk mendeteksi perilaku anomali di dalam kabin secara preventif.',
   'Sistem ini secara aktif memitigasi risiko kekerasan seksual melalui algoritma Real-time Pose Estimation guna menjamin keamanan perjalanan Anda.',
-  'SIMATA hadir untuk mewujudkan standar baru keamanan transportasi nasional yang inklusif melalui monitoring aktif yang patuh terhadap regulasi privasi.',
+  'Platform ini hadir untuk mewujudkan standar baru keamanan transportasi nasional yang inklusif melalui monitoring aktif yang patuh terhadap regulasi privasi.',
   'Memberikan perlindungan proaktif melalui pemrosesan data lokal (on-device) guna memastikan privasi mutlak bagi penumpang dan mitra pengemudi.',
   'Menyediakan infrastruktur bukti digital yang sah secara hukum sesuai amanat UU TPKS untuk memperkuat perlindungan bagi setiap pengguna.',
 ];
@@ -26,7 +26,7 @@ export default function FloatingInfoBox() {
         useNativeDriver: true,
       }).start(() => {
         // Change text
-        setCurrentIndex((prev) => (prev + 1) % SIMATA_FACTS.length);
+        setCurrentIndex((prev) => (prev + 1) % SAFETY_FACTS.length);
         // Fade in
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -44,12 +44,23 @@ export default function FloatingInfoBox() {
       <View style={styles.card}>
         <View style={styles.header}>
           <View style={styles.iconWrap}>
-            <Ionicons name="shield-checkmark" size={16} color="#02B150" />
+            <Image
+              source={require('../resources/icons/icon-small.png')}
+              style={styles.headerShieldIcon}
+              resizeMode="contain"
+            />
           </View>
-          <Text style={styles.headerText}>SIMATA Safety</Text>
+          <View style={styles.headerBrandRow}>
+            <Image
+              source={require('../resources/icons/icon-full.png')}
+              style={styles.headerLogo}
+              resizeMode="contain"
+            />
+            <Text style={styles.headerText}>Safety</Text>
+          </View>
           {/* Progress dots */}
           <View style={styles.dots}>
-            {SIMATA_FACTS.map((_, i) => (
+            {SAFETY_FACTS.map((_, i) => (
               <View
                 key={i}
                 style={[styles.dot, i === currentIndex && styles.dotActive]}
@@ -58,7 +69,7 @@ export default function FloatingInfoBox() {
           </View>
         </View>
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.factText}>{SIMATA_FACTS[currentIndex]}</Text>
+          <Text style={styles.factText}>{SAFETY_FACTS[currentIndex]}</Text>
         </Animated.View>
       </View>
     </View>
@@ -96,11 +107,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 8,
   },
+  headerShieldIcon: {
+    width: 16,
+    height: 16,
+  },
   headerText: {
     fontSize: 13,
     fontWeight: '700',
     color: '#02B150',
+  },
+  headerBrandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     flex: 1,
+    gap: 6,
+  },
+  headerLogo: {
+    width: 60,
+    height: 14,
   },
   dots: {
     flexDirection: 'row',
