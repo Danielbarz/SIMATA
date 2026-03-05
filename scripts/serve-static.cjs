@@ -39,9 +39,25 @@ function sendFile(filePath, res) {
 }
 
 const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent((req.url || '/').split('?')[0]);
-  const safePath = path.normalize(urlPath).replace(/^([.][.][/\\])+/, '');
-  const requestedPath = path.join(distDir, safePath === '/' ? 'index.html' : safePath);
+  if ((req.url || '').startsWith('/health')) {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify({ ok: true }));
+    return;
+  }
+
+  let urlPath = '/';
+  try {
+    urlPath = decodeURIComponent((req.url || '/').split('?')[0] || '/');
+  } catch {
+    res.writeHead(400, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end('Bad Request');
+    return;
+  }
+
+  // Remove leading slash so path.join cannot escape distDir on Unix hosts.
+  const normalized = path.normalize(urlPath).replace(/^[/\\]+/, '');
+  const safePath = normalized.replace(/^([.][.][/\\])+/, '');
+  const requestedPath = path.join(distDir, safePath === '' ? 'index.html' : safePath);
 
   fs.stat(requestedPath, (err, stats) => {
     if (!err && stats.isFile()) {
